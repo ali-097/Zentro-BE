@@ -18,9 +18,9 @@ services:
     container_name: postgres_db
     restart: always
     environment:
-      POSTGRES_DB: newdatabase
-      POSTGRES_USER: Haider_Ali
-      POSTGRES_PASSWORD: zentrofebe123
+      POSTGRES_DB: env.DB_NAME
+      POSTGRES_USER: env.DB_USER
+      POSTGRES_PASSWORD: env.DB_PASSWORD
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
