@@ -35,22 +35,31 @@ The two are kept in sync by an OpenAPI contract; see [Cross-repo contract](#cros
 
 You need **Node 22** and **Docker** (for Postgres). From a clean clone:
 
+**Working today**, while M0 is in progress:
+
 ```bash
 npm ci                       # install dependencies
 cp .env.example .env         # sane local defaults, works as-is
 docker compose up -d db      # start Postgres on :5432
-npm run migration:run        # create the schema
-npm run seed                 # optional: demo users, a group, some expenses
 npm run start:dev            # API on http://localhost:3000
 ```
 
-Verify it came up:
+`curl http://localhost:3000` returns `Hello World!` — the scaffold route. That is the whole
+API surface right now.
+
+**The full sequence, once M0 has landed**, adds three steps that do not work yet:
 
 ```bash
-curl http://localhost:3000/healthz     # -> {"status":"ok"}
+npm run migration:run        # create the schema        (needs #4)
+npm run seed                 # demo users and expenses  (needs #15)
+curl http://localhost:3000/healthz     # {"status":"ok"} (needs #12)
 ```
 
-Then open **http://localhost:3000/docs** for the full API surface.
+…and **http://localhost:3000/docs** for the full API surface (needs #11).
+
+If you run those today they will fail, and that is expected — see
+[Project status](#project-status) above. They are listed here so the target sequence is
+obvious, not because they are ready.
 
 If any of the above fails, the fix is almost certainly in
 **[docs/runbooks/local-dev.md](./docs/runbooks/local-dev.md)** — it covers port conflicts,
