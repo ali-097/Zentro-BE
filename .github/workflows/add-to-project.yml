@@ -1,0 +1,42 @@
+name: Add to project board
+
+# Adds every newly opened issue to the shared Zentro board.
+#
+# Why this exists rather than the Project's built-in "Auto-add to project" workflow:
+# that one is configured through the Projects UI only, its repository picker would not
+# stick, and there is no API to inspect or set it — so it silently added nothing and
+# there was no way to tell from outside. This does the same job in a file you can read,
+# review and fix.
+#
+# Runs only when an issue is opened. Nothing scheduled, nothing polling.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    env:
+      # GITHUB_TOKEN cannot write to a user-owned Project — a GitHub limitation, not a
+      # misconfiguration. This needs a classic PAT with the `project` scope, stored as
+      # the repository secret ADD_TO_PROJECT_PAT.
+      PAT: ${{ secrets.ADD_TO_PROJECT_PAT }}
+    steps:
+      # Skip cleanly when the secret is absent, so a missing secret shows as a skipped
+      # run rather than a red X on every issue anyone opens.
+      - name: Add issue to the board
+        if: env.PAT != ''
+        uses: actions/add-to-project@v1
+        with:
+          project-url: https://github.com/users/ali-097/projects/1
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+
+      - name: Explain the skip
+        if: env.PAT == ''
+        run: |
+          echo "::warning::ADD_TO_PROJECT_PAT is not set, so this issue was not added to the board."
+          echo "Add it under Settings > Secrets and variables > Actions."
+          echo "Until then, add new issues to the board by hand."
