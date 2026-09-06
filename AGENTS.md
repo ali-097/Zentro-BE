@@ -9,7 +9,7 @@ file only points at them.
 ## What this is
 
 Zentro is an expense-sharing app (Splitwise-class). This repo is the **REST API**; the
-Angular client is a separate repo, [Zentro-FE](https://github.com/ali-097/Zentro-FE).
+Angular client is a separate repo, [zentro-fe](https://github.com/ali-097/zentro-fe).
 
 NestJS 11 · TypeScript · PostgreSQL · TypeORM with migrations · Jest · Node 22.
 
@@ -55,6 +55,24 @@ npm run migration:run     #  ... :revert  :show
 Before finishing: `npm run lint && npm run typecheck && npm test` pass, schema changes have a
 migration whose `down()` you actually ran, and new routes have a DTO, a guard, Swagger
 annotations and a test.
+
+## Working the board
+
+All work for both repos is tracked on one board:
+<https://github.com/users/ali-097/projects/1> (private — ask for access).
+
+- **Only start issues in the Ready column.** Ready means no unmet dependency. A Backlog
+  issue carries a comment saying what it is waiting on; starting it will conflict with
+  whoever is doing the blocker.
+- Assign yourself and move the card to **In progress** before writing code.
+- Open the PR with `Closes #<n>` in the body, then move the card to **In review**.
+- After it merges, move the card to **Done** — then **unblock what it enabled**: search
+  `label:status:blocked` in both repos, and for any issue whose blocker just landed, remove
+  the `status:blocked` label and set its board Status to **Ready**.
+
+**None of this is automatic.** Nothing moves a card, and nothing unblocks a dependent issue,
+unless a person or agent does it. If you finish an issue and skip the unblock step, work
+that is now startable stays invisible in Backlog.
 
 ## Where to look
 

@@ -21,9 +21,9 @@ renamed field compiles cleanly on both sides and fails at runtime, in front of a
    served at `/docs`.
 2. On merge to `main`, CI runs `npm run openapi:emit` and commits `openapi.json` to the repo
    root.
-3. Zentro-FE's `npm run api:sync` fetches that file and regenerates typed models into
+3. zentro-fe's `npm run api:sync` fetches that file and regenerates typed models into
    `src/app/core/api/generated/`. Generated files are committed.
-4. **Zentro-FE's CI regenerates and fails if the result differs from what's committed.**
+4. **zentro-fe's CI regenerates and fails if the result differs from what's committed.**
 
 Step 4 is what makes this real rather than aspirational — drift becomes a red build instead
 of a runtime surprise.

@@ -19,8 +19,8 @@ it and skip the compose steps.
 ## First run
 
 ```bash
-git clone https://github.com/ali-097/Zentro-BE.git
-cd Zentro-BE
+git clone https://github.com/ali-097/zentro-be.git
+cd zentro-be
 
 npm ci                       # ci, not install — respects the lockfile exactly
 cp .env.example .env         # defaults work as-is for local development
@@ -60,7 +60,7 @@ docker compose logs -f db    # tail Postgres logs
 
 ## Working with the frontend
 
-Run [Zentro-FE](https://github.com/ali-097/Zentro-FE) on `:4200`; it's preconfigured to call
+Run [zentro-fe](https://github.com/ali-097/zentro-fe) on `:4200`; it's preconfigured to call
 `http://localhost:3000/api/v1`. This origin is already in the CORS allowlist in
 `.env.example`.
 
@@ -68,7 +68,7 @@ After changing any API shape, regenerate the frontend's client:
 
 ```bash
 npm run openapi:emit                 # here — writes openapi.json
-# then, in Zentro-FE:
+# then, in zentro-fe:
 npm run api:sync
 ```
 
