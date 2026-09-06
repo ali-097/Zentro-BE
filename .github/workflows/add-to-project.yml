@@ -29,7 +29,7 @@ jobs:
       # run rather than a red X on every issue anyone opens.
       - name: Add issue to the board
         if: env.PAT != ''
-        uses: actions/add-to-project@v1
+        uses: actions/add-to-project@v2
         with:
           project-url: https://github.com/users/ali-097/projects/1
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
