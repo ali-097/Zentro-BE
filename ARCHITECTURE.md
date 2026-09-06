@@ -10,7 +10,7 @@ How this service is put together and why. For the tables themselves see
 
 ```mermaid
 flowchart LR
-    U["User's browser"] --> FE["Zentro-FE<br/>Angular SPA"]
+    U["User's browser"] --> FE["zentro-fe<br/>Angular SPA"]
     FE -->|"REST /api/v1<br/>Bearer access token<br/>+ httpOnly refresh cookie"| API["Zentro API<br/>NestJS"]
     API --> DB[("PostgreSQL")]
     API --> OBJ[("Object storage<br/>receipt images")]
