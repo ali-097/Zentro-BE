@@ -1,98 +1,147 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Zentro API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+The backend for **Zentro**, an expense-sharing app — groups, shared expenses, split
+calculation, running balances and settle-up.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The Angular client lives in a separate repository: **[Zentro-FE](https://github.com/ali-097/Zentro-FE)**.
+The two are kept in sync by an OpenAPI contract; see [Cross-repo contract](#cross-repo-contract).
 
-## Description
+| | |
+|---|---|
+| **Stack** | NestJS 11 · TypeScript 5.7 · PostgreSQL 16 · TypeORM · Jest |
+| **Node** | 22 (see `.nvmrc`) |
+| **API base** | `/api/v1` |
+| **Docs** | Swagger UI at `http://localhost:3000/docs` |
+| **Board** | [Zentro project board](https://github.com/users/ali-097/projects) |
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## Project status
 
-```bash
-$ npm install
-```
+> **Pre-release. The `M0 Foundation` milestone is in progress.**
+>
+> This README, `ARCHITECTURE.md` and `docs/` describe the **target** design — they are what
+> M0 builds toward and what every issue is written against. Read them as the spec.
+>
+> Working today: `start:dev`, `lint`, `typecheck`, `test`, `build`, `docker compose up -d db`.
+>
+> Landing with M0: migrations (`migration:*` need `src/database/data-source.ts`), `seed`,
+> `openapi:emit`, `/healthz`, and validated config. Until those land, the app still boots
+> with the scaffold's settings. Each is a `priority:P0` issue on the board.
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## Quickstart
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+You need **Node 22** and **Docker** (for Postgres). From a clean clone:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm ci                       # install dependencies
+cp .env.example .env         # sane local defaults, works as-is
+docker compose up -d db      # start Postgres on :5432
+npm run migration:run        # create the schema
+npm run seed                 # optional: demo users, a group, some expenses
+npm run start:dev            # API on http://localhost:3000
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Verify it came up:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+curl http://localhost:3000/healthz     # -> {"status":"ok"}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Then open **http://localhost:3000/docs** for the full API surface.
 
-## Resources
+If any of the above fails, the fix is almost certainly in
+**[docs/runbooks/local-dev.md](./docs/runbooks/local-dev.md)** — it covers port conflicts,
+migration failures and connection errors. If your problem isn't there, that's a
+documentation bug worth filing.
 
-Check out a few resources that may come in handy when working with NestJS:
+> Prefer not to run Docker? Any local Postgres 16 works — point `DB_*` in `.env` at it and
+> skip the `docker compose` step.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## Scripts
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Command | What it does |
+|---|---|
+| `npm run start:dev` | Watch-mode dev server on `:3000` |
+| `npm run start:prod` | Run the compiled build (`dist/main`) |
+| `npm run build` | Compile to `dist/` |
+| `npm run lint` | ESLint, check only — this is what CI runs |
+| `npm run lint:fix` | ESLint with `--fix` |
+| `npm run format` | Prettier over `src/` and `test/` |
+| `npm run typecheck` | `tsc --noEmit` — fastest correctness check |
+| `npm test` | Unit tests |
+| `npm run test:watch` | Unit tests in watch mode |
+| `npm run test:cov` | Unit tests with a coverage report |
+| `npm run test:e2e` | Integration tests (**needs a running test database**) |
+| `npm run migration:generate -- src/database/migrations/<Name>` | Diff entities against the DB and write a migration |
+| `npm run migration:run` | Apply pending migrations |
+| `npm run migration:revert` | Roll back the most recent migration |
+| `npm run seed` | Load demo data into the local database |
+| `npm run openapi:emit` | Write `openapi.json` from the running Swagger document |
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Project layout
 
-## License
+```
+src/
+  common/          Cross-cutting: guards, interceptors, filters, decorators, pipes,
+                   and the money/split helpers every feature depends on
+  config/          Typed, validated configuration loaded once at boot
+  database/        DataSource, migrations, seeds
+  modules/         One module per aggregate — auth, users, groups, expenses,
+                   settlements, attachments, currencies, activity
+  main.ts          Bootstrap: global pipes, filters, Swagger, security middleware
+test/              Integration and e2e tests
+docs/              Architecture, data model, API conventions, ADRs, runbooks
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+A full annotated tree and a "where do I put X?" table live in
+[docs/structure.md](./docs/structure.md).
+
+---
+
+## Architecture in one paragraph
+
+Requests enter through a **controller**, which validates input into a DTO and applies
+guards. Controllers call a **service**, which holds all business logic and never sees HTTP.
+Services use **repositories** for persistence. Money is stored as integer minor units,
+balances are computed as SQL aggregates rather than in application memory, and every
+group-scoped route is authorized against group membership.
+
+Read [ARCHITECTURE.md](./ARCHITECTURE.md) for the full picture, and
+[docs/data-model.md](./docs/data-model.md) for the tables and the invariants that hold
+them together — those invariants are load-bearing and not obvious from the code.
+
+---
+
+## Cross-repo contract
+
+Because the client is a separate repo, **the OpenAPI document is the contract between them**:
+
+1. This repo serves Swagger at `/docs` and emits `openapi.json` at the repo root on every
+   merge to `main`.
+2. Zentro-FE regenerates its typed API client from that file.
+3. The frontend's CI fails if its generated types drift from this document.
+
+The practical consequence: **a breaking API change is a breaking change in another repo.**
+Ship additively where you can, and when you can't, open the paired frontend issue in the
+same PR description. See [docs/api/README.md](./docs/api/README.md#versioning-and-breaking-changes).
+
+---
+
+## Contributing
+
+Read [CONTRIBUTING.md](./CONTRIBUTING.md) — branching, Conventional Commits, the PR flow
+and the review bar. Work is tracked on the shared project board; start with anything in
+the **M0 Foundation** milestone.
+
+AI coding agents should read [AGENTS.md](./AGENTS.md).
+
+## Security
+
+Found a vulnerability? See [SECURITY.md](./SECURITY.md) — please don't open a public issue.

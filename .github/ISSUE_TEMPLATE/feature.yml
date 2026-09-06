@@ -1,0 +1,68 @@
+name: Feature
+description: A new capability or endpoint
+labels: ['type:feature']
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: One or two sentences. What should exist that doesn't?
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What can't a user do today? Skip this and it gets built to the wrong shape.
+    validations:
+      required: true
+
+  - type: textarea
+    id: api
+    attributes:
+      label: Proposed API surface
+      description: Routes, request and response shapes. Rough is fine — it's a starting point for review.
+      render: http
+      placeholder: |
+        POST /api/v1/groups/:groupId/invites
+        { "email": "someone@example.com", "role": "member" }
+        -> 201 { "id": "...", "expiresAt": "..." }
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How we know it's done. Anyone should be able to verify these without asking you.
+      value: |
+        - [ ]
+        - [ ] Non-member receives 404 on every group-scoped route added here
+        - [ ] Integration tests cover success, unauthenticated, non-member, invalid input
+        - [ ] Swagger annotations complete (the frontend's types are generated from them)
+    validations:
+      required: true
+
+  - type: textarea
+    id: data
+    attributes:
+      label: Data model impact
+      description: New tables or columns? New invariants? Needs a migration?
+
+  - type: input
+    id: frontend
+    attributes:
+      label: Paired frontend issue
+      description: Link it if the client needs a matching change. Both should be filed together.
+      placeholder: https://github.com/ali-097/Zentro-FE/issues/00
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - 'P0 — blocks other work'
+        - 'P1 — needed for the current milestone'
+        - 'P2 — should happen'
+        - 'P3 — nice to have'
+    validations:
+      required: true

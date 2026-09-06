@@ -1,0 +1,71 @@
+name: Bug report
+description: Something behaves incorrectly
+labels: ['type:bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If this is a **security** issue, stop and report it privately instead:
+        [Security Advisories](https://github.com/ali-097/Zentro-BE/security/advisories/new).
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you observe? Include the error message and `requestId` if you have them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: A `curl` command or failing test is worth more than prose.
+      placeholder: |
+        1. POST /api/v1/expenses with { ... }
+        2. GET /api/v1/groups/:id/balances
+        3. Balance is 999 instead of 1000
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - auth
+        - groups
+        - expenses / splits
+        - balances / settle-up
+        - attachments
+        - currencies
+        - database / migrations
+        - infrastructure / CI
+        - other / not sure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: ledger
+    attributes:
+      label: Does this affect the ledger?
+      description: Anything touching amounts is treated as high priority — wrong money is the worst bug this app can have.
+      options:
+        - label: This produces a wrong balance, wrong split, or a lost/duplicated amount
+        - label: This lets a user see or change data belonging to a group they are not in
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        Branch/commit:
+        Node version:
+        Local, or deployed?

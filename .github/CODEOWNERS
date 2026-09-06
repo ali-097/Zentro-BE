@@ -1,0 +1,25 @@
+# Code owners are requested for review automatically.
+# The last matching pattern wins.
+
+# Default owner for everything.
+*                           @ali-097
+
+# The highest-consequence code in the repo. A rounding bug here is silent and corrupts
+# the ledger, so these always want a careful second pair of eyes.
+/src/common/money/          @ali-097
+/src/modules/expenses/      @ali-097
+/src/modules/settlements/   @ali-097
+
+# Auth and authorization.
+/src/modules/auth/          @ali-097
+/src/common/guards/         @ali-097
+
+# Migrations are append-only and irreversible once merged and run.
+/src/database/migrations/   @ali-097
+
+# Decisions, contracts and anything that changes how the team works.
+/docs/adr/                  @ali-097
+/openapi.json               @ali-097
+/.github/                   @ali-097
+/AGENTS.md                  @ali-097
+/CLAUDE.md                  @ali-097

@@ -1,30 +1,65 @@
-version: "3.9"
+# Local development stack.
+#
+# Usual workflow is to run only Postgres here and the API on the host, which gives faster
+# reloads and a working debugger:
+#
+#   docker compose up -d db
+#   npm run start:dev
+#
+# To run everything in containers instead:
+#
+#   docker compose --profile full up
+#
+# Values come from .env — see .env.example.
+# This file is for development only. It is not a production deployment.
 
 services:
-  backend:
-    build: .
-    container_name: nest_backend
-    ports:
-      - "5432:5432"
-    env_file:
-      - .env
-    depends_on:
-      - db
-    volumes:
-      - .:/app
-
   db:
-    image: postgres:15
-    container_name: postgres_db
-    restart: always
+    image: postgres:16-alpine
+    container_name: zentro_db
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: env.DB_NAME
-      POSTGRES_USER: env.DB_USER
-      POSTGRES_PASSWORD: env.DB_PASSWORD
+      POSTGRES_DB: ${DB_NAME:-zentro}
+      POSTGRES_USER: ${DB_USER:-zentro}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-zentro_local_password}
+    ports:
+      # Host port is configurable: if a local Postgres already owns 5432, set
+      # DB_PORT to something else in .env rather than stopping that service.
+      - '${DB_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # The API must not start before Postgres is accepting connections. Without this,
+      # `depends_on` only waits for the container to exist, not to be usable.
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-zentro} -d ${DB_NAME:-zentro}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  api:
+    profiles: ['full']
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: zentro_api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Inside the compose network the database is reachable by service name on its
+      # internal port, regardless of what it's published as on the host.
+      DB_HOST: db
+      DB_PORT: 5432
     ports:
-      - "5432:5432"
+      - '${PORT:-3000}:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      # Anonymous volume keeps the image's node_modules from being shadowed by the host's,
+      # which otherwise breaks any package with native bindings.
+      - /app/node_modules
 
 volumes:
   postgres_data:

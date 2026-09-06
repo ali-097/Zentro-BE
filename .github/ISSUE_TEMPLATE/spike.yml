@@ -1,0 +1,45 @@
+name: Spike
+description: A timeboxed investigation to answer a question before committing to work
+labels: ['type:spike']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A spike answers a question. It is not a licence to build something — the output is a
+        recommendation, usually an ADR, and throwaway code at most.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: The question
+      description: One sentence, answerable. "Can we X?" or "Should we use A or B?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: matters
+    attributes:
+      label: Why it matters
+      description: What decision is blocked until this is answered?
+    validations:
+      required: true
+
+  - type: input
+    id: timebox
+    attributes:
+      label: Timebox
+      description: Stop when you hit this and report what you found, even if it's inconclusive.
+      placeholder: 4 hours
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Expected output
+      value: |
+        - [ ] A recommendation with reasoning
+        - [ ] An ADR in docs/adr/ if the answer is a decision
+        - [ ] Follow-up issues filed for whatever the answer implies
+    validations:
+      required: true
