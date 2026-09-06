@@ -5,7 +5,7 @@
 
 ## Context
 
-Zentro started as two repositories — `Zentro-BE` and `Zentro-FE` — created on the same day,
+Zentro started as two repositories — `zentro-be` and `zentro-fe` — created on the same day,
 by default rather than by decision. Before building out documentation, CI and a backlog, it
 was worth deciding whether to consolidate, because that choice determines where all of it
 lives.

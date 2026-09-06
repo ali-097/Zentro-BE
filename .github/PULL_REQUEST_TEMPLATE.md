@@ -43,7 +43,7 @@ test, a scenario you stepped through.
 
 ### If this changes the API contract
 
-- [ ] Paired Zentro-FE issue linked below — the client generates its types from our OpenAPI
+- [ ] Paired zentro-fe issue linked below — the client generates its types from our OpenAPI
 - [ ] Breaking changes are additive-then-deprecate, not a rename in place
 
 Paired frontend issue:

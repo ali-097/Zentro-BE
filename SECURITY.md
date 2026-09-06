@@ -4,7 +4,7 @@
 
 **Please don't open a public issue.**
 
-Report privately through GitHub's [Security Advisories](https://github.com/ali-097/Zentro-BE/security/advisories/new),
+Report privately through GitHub's [Security Advisories](https://github.com/ali-097/zentro-be/security/advisories/new),
 which creates a private thread with the maintainers.
 
 Include what you can:

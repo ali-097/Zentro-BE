@@ -74,7 +74,7 @@ never be sufficient.
   return; DTOs have `@ApiProperty`. **Missing annotations become `any` in the frontend**,
   which is worse than an error because nothing complains.
 - Breaking changes are additive-then-deprecate, not a rename in place, and have a paired
-  Zentro-FE issue linked.
+  zentro-fe issue linked.
 
 ### Tests
 

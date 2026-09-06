@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         If this is a **security** issue, stop and report it privately instead:
-        [Security Advisories](https://github.com/ali-097/Zentro-BE/security/advisories/new).
+        [Security Advisories](https://github.com/ali-097/zentro-be/security/advisories/new).
 
   - type: textarea
     id: what-happened

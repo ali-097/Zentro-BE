@@ -9,7 +9,7 @@ file only points at them.
 ## What this is
 
 Zentro is an expense-sharing app (Splitwise-class). This repo is the **REST API**; the
-Angular client is a separate repo, [Zentro-FE](https://github.com/ali-097/Zentro-FE).
+Angular client is a separate repo, [zentro-fe](https://github.com/ali-097/zentro-fe).
 
 NestJS 11 · TypeScript · PostgreSQL · TypeORM with migrations · Jest · Node 22.
 

@@ -145,7 +145,7 @@ When you must break something:
 
 1. Add the replacement alongside the old one.
 2. Mark the old one `@deprecated` in Swagger.
-3. Open the paired issue in Zentro-FE and link it in your PR.
+3. Open the paired issue in zentro-fe and link it in your PR.
 4. Remove the old field only after the frontend has migrated.
 
 ## Documenting an endpoint

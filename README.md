@@ -3,7 +3,7 @@
 The backend for **Zentro**, an expense-sharing app — groups, shared expenses, split
 calculation, running balances and settle-up.
 
-The Angular client lives in a separate repository: **[Zentro-FE](https://github.com/ali-097/Zentro-FE)**.
+The Angular client lives in a separate repository: **[zentro-fe](https://github.com/ali-097/zentro-fe)**.
 The two are kept in sync by an OpenAPI contract; see [Cross-repo contract](#cross-repo-contract).
 
 | | |
@@ -125,7 +125,7 @@ Because the client is a separate repo, **the OpenAPI document is the contract be
 
 1. This repo serves Swagger at `/docs` and emits `openapi.json` at the repo root on every
    merge to `main`.
-2. Zentro-FE regenerates its typed API client from that file.
+2. zentro-fe regenerates its typed API client from that file.
 3. The frontend's CI fails if its generated types drift from this document.
 
 The practical consequence: **a breaking API change is a breaking change in another repo.**

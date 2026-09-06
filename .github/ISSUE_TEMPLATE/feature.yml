@@ -53,7 +53,7 @@ body:
     attributes:
       label: Paired frontend issue
       description: Link it if the client needs a matching change. Both should be filed together.
-      placeholder: https://github.com/ali-097/Zentro-FE/issues/00
+      placeholder: https://github.com/ali-097/zentro-fe/issues/00
 
   - type: dropdown
     id: priority
