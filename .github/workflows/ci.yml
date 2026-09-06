@@ -1,0 +1,167 @@
+name: CI
+
+# Runs only on pushes to main and on pull requests. There is no schedule and no cron —
+# nothing here runs on its own.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push to a PR cancels the previous run instead of queueing behind it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  # Static checks. Fast, no services, so failures come back in under a minute.
+  static:
+    name: Lint, format & types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Unit tests
+        run: npm test -- --ci --runInBand
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  # Integration tests need a real database — the guards, transactions and balance
+  # aggregates are exactly what a mocked repository cannot verify.
+  #
+  # Enabled by the M0 issue that adds the test harness and DataSource. Until then it is
+  # skipped rather than deleted, so the wiring is already reviewed and ready.
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    if: false # TODO(#M0): enable with "Add integration test harness"
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: zentro_test
+          POSTGRES_USER: zentro
+          POSTGRES_PASSWORD: zentro
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: zentro
+      DB_PASSWORD: zentro
+      DB_NAME: zentro_test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run migrations
+        run: npm run migration:run
+
+      # If the entities have drifted from the migrations, this generates a non-empty
+      # migration — meaning someone changed an entity and forgot the migration. That bug
+      # otherwise stays invisible until it reaches an environment with real data.
+      - name: Check for schema drift
+        run: |
+          npm run migration:generate -- src/database/migrations/DriftCheck
+          if git diff --quiet --exit-code src/database/migrations; then
+            echo "No schema drift."
+          else
+            echo "::error::Entities have drifted from migrations. Generate and commit one."
+            git diff src/database/migrations
+            exit 1
+          fi
+
+      - name: Integration tests
+        run: npm run test:e2e -- --ci --runInBand
+
+  # The frontend generates its API client from this document, so it must stay current.
+  # Enabled by the M0 Swagger issue.
+  openapi:
+    name: Emit OpenAPI contract
+    runs-on: ubuntu-latest
+    if: false # TODO(#M0): enable with "Add Swagger + openapi.json emission"
+    needs: [static, build]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Emit openapi.json
+        run: npm run openapi:emit
+
+      - name: Fail if the committed contract is stale
+        run: |
+          if ! git diff --quiet --exit-code openapi.json; then
+            echo "::error::openapi.json is out of date. Run 'npm run openapi:emit' and commit it."
+            git diff openapi.json
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openapi
+          path: openapi.json

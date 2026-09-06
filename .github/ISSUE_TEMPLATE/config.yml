@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Frontend issue
+    url: https://github.com/ali-097/Zentro-FE/issues/new/choose
+    about: For anything in the Angular client. If it spans both, file in each and link them.
+  - name: Security vulnerability
+    url: https://github.com/ali-097/Zentro-BE/security/advisories/new
+    about: Report privately. Please do not open a public issue.
+  - name: Project board
+    url: https://github.com/ali-097/Zentro-BE/projects
+    about: See what is planned, in progress and done across both repos.

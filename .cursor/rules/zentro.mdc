@@ -1,0 +1,19 @@
+---
+description: Zentro API conventions and rules
+alwaysApply: true
+---
+
+The instructions for this repository live in `AGENTS.md` at the repo root. Read it — it is
+the single source of truth for every AI tool used here, so there is nothing to keep in sync.
+
+The rules most likely to cause real bugs, restated so they are never missed:
+
+1. Money is `bigint` minor units plus an ISO-4217 code. Never a float. All arithmetic on
+   amounts goes through `src/common/money/`.
+2. Every group-scoped route is guarded **and** its query is scoped by membership. Non-members
+   receive 404, never 403.
+3. `synchronize` stays `false`. Schema changes go through a reviewed migration.
+4. Never return a TypeORM entity from a controller — map to a response DTO.
+5. Services are HTTP-blind: no `Request`, no `HttpException`. Throw domain errors.
+
+Before touching anything ledger-related, read `docs/data-model.md`.

@@ -1,0 +1,46 @@
+version: 2
+
+# Grouped and capped deliberately. Ungrouped Dependabot on a NestJS project opens a dozen
+# PRs a week and everyone stops reading them, which is worse than not running it at all.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    groups:
+      nestjs:
+        patterns: ['@nestjs/*']
+      typeorm:
+        patterns: ['typeorm', '@nestjs/typeorm', 'pg', 'pg-*']
+      testing:
+        patterns: ['jest', '@types/jest', 'ts-jest', 'supertest', '@types/supertest']
+      linting:
+        patterns: ['eslint', 'eslint-*', '@eslint/*', 'typescript-eslint', 'prettier', 'prettier-*']
+      types:
+        patterns: ['@types/*']
+        exclude-patterns: ['@types/jest', '@types/supertest']
+    ignore:
+      # Major bumps of the framework and ORM are migrations, not dependency updates.
+      # Do them deliberately, with an issue and a plan.
+      - dependency-name: '@nestjs/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typeorm'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: 'chore(ci)'
+    groups:
+      actions:
+        patterns: ['*']

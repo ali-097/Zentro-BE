@@ -54,3 +54,12 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Local uploads when STORAGE_DRIVER=local
+/storage
+
+# Claude Code: settings.json is shared and committed; settings.local.json is personal.
+.claude/settings.local.json
+
+# .env is already ignored above. .env.example is committed on purpose — keep it that way.
+!.env.example
